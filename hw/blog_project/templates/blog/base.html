@@ -1,0 +1,53 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{% block title %}Posts{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<div class="blog-masthead">
+    <div class="container">
+        <nav class="blog-nav">
+            <a class="blog-nav-item {%block home_class%}{%endblock%}" href="{% url 'index' %}">Home</a>
+            <a class="blog-nav-item {%block new_post_class%}{%endblock%}" href="{% url 'new_post' %}">New post</a>
+            <a class="blog-nav-item {%block search_class%}{%endblock%}" href="{% url 'search' %}">Search</a>
+        </nav>
+    </div>
+</div>
+
+<div class="container">
+    <div class="blog-header">
+        <h1 class="blog-title">The Blog</h1>
+
+        <p class="lead blog-description">Simple lorem ipsum blog</p>
+    </div>
+    {% block search %} {% endblock %}
+
+
+    {% block content %}{% endblock %}
+</div>
+
+{#<div id="footer">© 2014 All rights reserved</div>#}
+<div class="blog-footer">
+    <p>© 2014 All rights reserved</p>
+
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</div>
+
+<!-- Bootstrap core JavaScript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>

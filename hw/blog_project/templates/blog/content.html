@@ -1,0 +1,37 @@
+{% extends "blog/base.html" %}
+{% load staticfiles %}
+
+{%block home_class%}active{%endblock%}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-10 blog-main">
+            {% if posts %}
+                {% for t in posts %}
+                    <div class="blog-post">
+                        <h2 class="blog-post-title">{{ t.title }}</h2>
+
+                        <p class="blog-post-meta">{{ t.p_date }}</p>
+
+                        <p>{{ t.text }}</p>
+                    </div>
+                {% endfor %}
+
+
+                <ul class="pager">
+                    {% if posts.has_previous %}
+                        <li><a href="?{{ query_string }}&amp;page={{ posts.previous_page_number }}">Previous</a></li>
+                    {% endif %}
+                    <li>Page {{ posts.number }} of {{ posts.paginator.num_pages }}</li>
+                    {% if posts.has_next %}
+                        <li><a href="?{{ query_string }}&amp;page={{ posts.next_page_number }}">Next</a></li>
+                    {% endif %}
+                </ul>
+
+            {% else %}
+                <p>Nothing to show! </p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

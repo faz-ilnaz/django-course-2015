@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+
+{% block title %}New post{% endblock %}
+{% block new_post_class %}active{% endblock %}
+
+
+{% block content %}
+
+    <form role="form" {% url 'new_post' %} method='post'>
+    {% csrf_token %}
+
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" name="title" id="title" placeholder="Enter post title">
+        </div>
+        <div class="form-group">
+            <label for="text">Text</label>
+            <textarea class="form-control" name="text" id="text" placeholder="Type text here ..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+
+{% endblock %}
