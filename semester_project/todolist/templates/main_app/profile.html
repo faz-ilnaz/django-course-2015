@@ -1,0 +1,59 @@
+{% extends 'main_app/base.html' %}
+
+{% block content %}
+    <div class="row">
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-8 col-md-offset-2 main">
+            <h1 class="page-header">Profile</h1>
+
+
+            <div class="row">
+                <form role="form">
+                    <div class="form-group">
+                        <label for="first_name">First name</label>
+                        <input type="text" class="form-control" id="first_name" placeholder="First name">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last name</label>
+                        <input type="text" class="form-control" id="last_name" placeholder="Last name">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="about_me">About me</label>
+                        <textarea id="about_me" class="form-control" rows="3" name="about_me"></textarea>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="male" id="male" value="m" checked>
+                            Male
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="female" id="female" value="f">
+                            Female
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="birth-date">Birth date</label>
+                        <input type="date" name="birth_date" id="birthdate"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="avatar">Avatar</label>
+                        <input type="file" id="avatar">
+                    </div>
+
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

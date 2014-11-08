@@ -1,0 +1,41 @@
+{% extends 'main_app/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="row">
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Labels</h1>
+
+
+            <div class="row">
+
+                <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col-md-3" style="color: red; font-size: 14pt">@to_send</div>
+                        <div class="col-md-2">
+                            <img src="{% static 'images/edit.png' %}"/></div>
+                    </div>
+
+                </div>
+                <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col-md-3" style="color: #245269; font-size: 14pt">@2peter</div>
+                        <div class="col-md-2">
+                            <img src="{% static 'images/edit.png' %}"/></div>
+                    </div>
+                </div>
+                <div class="col-sm-10">
+                    <div class="row">
+                        <div class="col-md-3" style="color: #eb9316; font-size: 14pt">@daily</div>
+                        <div class="col-md-2">
+                            <img src="{% static 'images/edit.png' %}"/></div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
