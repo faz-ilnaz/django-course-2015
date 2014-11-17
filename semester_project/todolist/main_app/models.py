@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
+import PIL
 
 
 class Task(models.Model):
@@ -58,9 +59,8 @@ class Dictionary(models.Model):
 
 
 class Profile(models.Model):
-    # avatar = models.ImageField()  - doesn't work, requires Pillow
-    avatar = models.FileField()
-    birth_date = models.DateField()
+    avatar = models.ImageField(upload_to='avatars', blank=True)
+    birth_date = models.DateField(auto_now=True)
     registration_date = models.DateField(auto_now_add=True)
 
 
@@ -73,6 +73,6 @@ class Comment(models.Model):
 
 
 class Member(models.Model):
-    user = ForeignKey(User, unique=True)
+    user = OneToOneField(User)
     profile = OneToOneField('Profile')
 
