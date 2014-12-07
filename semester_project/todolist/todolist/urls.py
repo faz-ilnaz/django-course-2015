@@ -6,6 +6,12 @@ from django.views.generic import TemplateView
 from main_app.views import LoginView, no_auth
 from todolist import settings
 
+
+# v1_api = Api(api_name='v1')
+# v1_api.register(ProjectResource())
+# v1_api.register(TaskResource())
+
+
 urlpatterns = patterns('main_app.views',
     # Examples:
     url(r'^$', 'index', name='index'),
@@ -35,13 +41,24 @@ urlpatterns = patterns('main_app.views',
         TemplateView.as_view(template_name="main_app/help.html"),
         name="help"
     ),
+
+
     url(
-        r'^projects/',
-        login_required(TemplateView.as_view(template_name="main_app/projects.html"), login_url=reverse_lazy('sign_in')),
-        name="projects"
+        r'^new_index/',
+        TemplateView.as_view(template_name="main_app/new_index.html"),
+        name="new_index"
     ),
 
+    url(r'^projects/(?P<project_id>\w+)', 'certain_project', name='certain_project'),
+
+    url(r'^projects/$', 'all_projects', name='projects'),
+
     url(r'^admin/', include(admin.site.urls)),
+
+    # Include API URLs
+    url(r'^api/', include('api.urls')),
+
+    # url(r'^api/', include(v1_api.urls)),
 )
 
 urlpatterns += patterns('',

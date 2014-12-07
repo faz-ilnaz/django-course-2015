@@ -10,28 +10,52 @@
 
             <div class="row">
 
-                <div class="col-sm-10">
-                    <div class="row">
-                        <div class="col-md-3" style="font-size: 14pt">Inbox</div>
-                        <div class="col-md-2">
-                            <img src="{% static 'images/edit.png' %}"/></div>
-                    </div>
 
-                </div>
-                <div class="col-sm-10">
-                    <div class="row">
-                        <div class="col-md-3" style="font-size: 14pt">Project 1</div>
-                        <div class="col-md-2">
-                            <img src="{% static 'images/edit.png' %}"/></div>
-                    </div>
-                </div>
-                <div class="col-sm-10">
-                    <div class="row">
-                        <div class="col-md-3" style="font-size: 14pt">Project 2</div>
-                        <div class="col-md-2">
-                            <img src="{% static 'images/edit.png' %}"/></div>
-                    </div>
-                </div>
+
+{#                <div class="col-sm-10">#}
+{#                    <div class="row">#}
+{#                        <div class="col-md-3" style="font-size: 14pt">Inbox</div>#}
+{#                        <div class="col-md-2">#}
+{#                            <img src="{% static 'images/edit.png' %}"/></div>#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{#                <div class="col-sm-10">#}
+{#                    <div class="row">#}
+{#                        <div class="col-md-3" style="font-size: 14pt">Project 1</div>#}
+{#                        <div class="col-md-2">#}
+{#                            <img src="{% static 'images/edit.png' %}"/></div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-sm-10">#}
+{#                    <div class="row">#}
+{#                        <div class="col-md-3" style="font-size: 14pt">Project 2</div>#}
+{#                        <div class="col-md-2">#}
+{#                            <img src="{% static 'images/edit.png' %}"/></div>#}
+{#                    </div>#}
+{#                </div>#}
+
+                <form action="{% url 'projects' %}" method='post'>
+                    {% csrf_token %}
+                    <label for="project_name">Add new project:</label>
+
+                    <p><textarea id="project_name" name='project_name' cols="100"></textarea></p>
+
+                    <p><input type='submit' value='Add'/></p>
+                </form>
+
+                {% if projects %}
+                    {% for p in projects %}
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <div class="col-md-3" style="font-size: 14pt">{{ p.name }} ({{ p.id }})</div>
+                                <div class="col-md-2">
+                                    <img src="{% static 'images/edit.png' %}"/>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
 
             </div>

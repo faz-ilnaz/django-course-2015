@@ -1,32 +1,77 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import Q
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response, redirect
 
 # Create your views here.
 from django.template import RequestContext
 from django.utils.datetime_safe import datetime
-from django.utils.decorators import method_decorator
 from django.views.generic import FormView
 from main_app.forms import UserForm, UserProfileForm, LoginForm
-from main_app.models import Task, Member, Project
+from main_app.models import Task, Project
+
+
+# returns inbox project
+@login_required(login_url=reverse_lazy("sign_in"))
+def index(request):
+    projects = Project.objects.filter(owners__in=[request.user])
+    # print(projects)
+    query = Q(owners__in=[request.user]) & Q(name__iexact='inbox')
+
+    curr_project = Project.objects.get(query)
+    curr_project_id = curr_project.id
+    context = {'projects': projects,
+               'curr_project': curr_project,
+               'curr_project_id': curr_project_id,
+               'tasks': Task.objects.filter(project=curr_project).order_by("-t_date")
+               }
+    # print(curr_project)
+    return render(request, 'main_app/index.html',
+                  context)
 
 
 @login_required(login_url=reverse_lazy("sign_in"))
-def index(request):
+def certain_project(request, project_id='-1'):
+    project_id = int(project_id)
+    projects = Project.objects.filter(owners__in=[request.user])
+    if project_id == -1:
+        query = Q(name__iexact='inbox')
+    else:
+        query = Q(pk=int(project_id))
+    curr_project = Project.objects.get(query)
+
     return render(request, 'main_app/index.html',
-                  # {"tasks": Task.objects.filter(project=request.user.member.project_set).order_by("-t_date")})
-                  {"tasks": Task.objects.filter().order_by("-t_date")})
+                  # {"tasks": Task.objects.filter(project=project).order_by("-t_date")})
+                  # {"tasks": Task.objects.filter().order_by("-t_date")})
+                  {'projects': projects,
+                   'curr_project': curr_project,
+                   "tasks": Task.objects.filter(project=curr_project).order_by("-t_date")})
+
+
+def all_projects(request):
+    if request.method == 'POST':
+        name = request.POST["project_name"]
+        p = Project(name=name)
+        p.save()
+        p.owners.add(request.user)
+        # p.save()
+        projects = Project.objects.filter(owners__in=[request.user])
+        return render(request, 'main_app/projects.html', {'projects': projects})
+    else:
+        projects = Project.objects.filter(owners__in=[request.user])
+        return render(request, 'main_app/projects.html', {'projects': projects})
 
 
 @login_required(login_url=reverse_lazy("sign_in"))
 def process(request):
     task_desc = request.POST["task_desc"]
-    task = Task(title=task_desc, t_date=datetime.now(), isActive=True)
+    project_id = request.POST["project_id"]
+    task = Task(title=task_desc, t_date=datetime.now(), isDone=False)
+    task.project = Project.objects.get(id=project_id)
     task.save()
-    print "GOT " + task.__str__()
-    return HttpResponseRedirect(reverse('index'))
+    return redirect('certain_project', project_id=project_id)
 
 
 def about(request):
@@ -50,12 +95,14 @@ def no_auth(v):
             return HttpResponseRedirect(reverse("index"))
         else:
             return v(request, *a, **k)
+
     return wrapper
+
 
 # User Register View
 # def user_register(request):
 # if request.user.is_anonymous():
-#         if request.method == 'POST':
+# if request.method == 'POST':
 #             form = UserRegisterForm(request.POST)
 #             if form.is_valid:
 #                 form.save()
@@ -80,7 +127,6 @@ def profile(request):
 def sign_up(request):
     context = RequestContext(request)
 
-
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm(data=request.POST)
@@ -90,17 +136,15 @@ def sign_up(request):
 
             user.set_password(user.password)
             user.save()
-
-            profile = profile_form.save(commit=False)
-            # profile.user = user
+            user_profile = profile_form.save(commit=False)
+            user_profile.user = user
+            p = Project(name='inbox')
+            p.save()
+            p.owners.add(user)
 
             if 'avatar' in request.FILES:
                 profile.avatar = request.FILES['avatar']
-
-            profile.save()
-            member = Member(user=user, profile=profile)
-            member.save()
-            member.project_set.create(name='inbox')
+            user_profile.save()
             return redirect(reverse_lazy('index'))
         else:
             print user_form.errors, profile_form.errors
@@ -116,7 +160,6 @@ def sign_up(request):
 
 
 class LoginView(FormView):
-
     form_class = LoginForm
     success_url = reverse_lazy("index")
     template_name = "main_app/signin.html"
@@ -134,7 +177,7 @@ class LoginView(FormView):
         user = authenticate(
             username=form.cleaned_data["username"],
             password=form.cleaned_data["password"],
-            )
+        )
         if user:
             if user.is_active:
                 login(self.request, user)
@@ -147,9 +190,6 @@ class LoginView(FormView):
                 return HttpResponse("Your account is disabled.")
         else:
             return redirect(reverse_lazy('sign_in'))
-
-
-
 
 
 # @no_auth

@@ -1,8 +1,11 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html>
+<html ng-app="todo">
 <head lang="en">
     <meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Angular js Todo-Sortable-List Example"/>
     <title>{% block title %}ToDo list{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
@@ -10,6 +13,8 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/common.css">
 
 </head>
 <body>
@@ -68,7 +73,5 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="{% static 'js/jquery-1.11.1.min.js' %}"></script>
-<script src="{% static 'js/bootstrap.min.js' %}"></script>
 </body>
 </html>

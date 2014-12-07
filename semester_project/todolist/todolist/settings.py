@@ -40,6 +40,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main_app',
+    # Django Rest Framework
+    'rest_framework',
+
+    # 'tastypie',
 )
 
 MIDDLEWARE_CLASSES = (

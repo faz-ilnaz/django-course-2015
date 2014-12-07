@@ -13,4 +13,15 @@ admin.site.register(Task)
 admin.site.register(Priority)
 admin.site.register(Profile)
 admin.site.register(Project)
-admin.site.register(Member)
+
+
+# class TodoItemAdmin(admin.ModelAdmin):
+#     pass
+#
+#
+# class TodoListAdmin(admin.ModelAdmin):
+#     pass
+#
+#
+# admin.site.register(Task, TodoItemAdmin)
+# admin.site.register(Project, TodoListAdmin)
