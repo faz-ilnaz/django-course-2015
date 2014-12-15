@@ -12,6 +12,9 @@
     <script src="{% static 'js/app.js' %}"></script>
     <script src="{% static 'js/directives/angular.editInPlace.js' %}"></script>
     <script src="{% static 'js/directives/angular.ngEnter.js' %}"></script>
+    <script src="{% static 'js/libs/xeditable.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/common.css'%}">
+    <link href="{% static 'css/xeditable.css' %}" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -68,10 +71,9 @@
                             ui-sortable="todoSortable" ng-model="projects.tasks" ng-show="$index === currentShow">
                             <li class="todoTask"
                                 ng-repeat="task in projects.tasks | filter:showFn | filter :todoSearch">
-                                <input class="todoCheckbox" ng-model="task.isDone" type="checkbox"
-                                       ng-click='toggleTodoItemStatus(task)'>
+                                <input class="todoCheckbox" ng-model="task.isDone" type="checkbox" ng-click='toggleTodoItemStatus(task)'>
                                 <label class="todoCheckboxlabel"></label>
-                                <edit-in-place value="task.title"></edit-in-place>
+                                <a href="#" editable-text="task.title" onaftersave="updateTask(task)" e-required e-placeholder="Enter task">{{ task.title }}</a>
                                 <button type="button" class="close pull-right" aria-hidden="true"
                                         ng-click="deleteTodo(task)">&times;</button>
                             </li>
@@ -84,7 +86,7 @@
         </div>
     </div>
     {% endverbatim %}
-
+{#                                <edit-in-place value="task.title"></edit-in-place>#}
 
 
 

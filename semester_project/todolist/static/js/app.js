@@ -6,7 +6,7 @@
 **/
 "use strict";
 
-var App = angular.module("todo", ["ui.sortable", 'ngCookies']);
+var App = angular.module("todo", ["ui.sortable", 'ngCookies', 'xeditable']);
 
 App.controller("TodoCtrl", function ($scope, $http, $cookies) {
 
@@ -54,6 +54,10 @@ App.controller("TodoCtrl", function ($scope, $http, $cookies) {
 
     };
 
+    $scope.updateTask = function(task) {
+        return $http.put('/api/tasks/' +  task.id, task)
+     };
+
 	$scope.todoSortable = {
 		containment: "parent",//Dont let the user drag outside the parent
 		cursor: "move",//Change the cursor icon on drag
@@ -89,7 +93,9 @@ App.controller("TodoCtrl", function ($scope, $http, $cookies) {
 
 //	$scope.$watch("model",function  (newVal,oldVal) {
 //		if (newVal !== null && angular.isDefined(newVal) && newVal!==oldVal) {
-//			localStorageService.add("todoList",angular.toJson(newVal));
+//            $http.post('/api/tasks/',  angular.toJson(newVal)).success(function(response){
+//
+//            });
 //		}
 //	},true);
 

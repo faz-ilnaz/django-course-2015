@@ -60,3 +60,9 @@
 .edit-in-place.active input {
   display: inline-block;
 }
+
+.editable-click, a.editable-click {
+    text-decoration: none;
+    color: #080808;
+    border-bottom: none;
+}

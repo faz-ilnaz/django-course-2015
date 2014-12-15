@@ -17,8 +17,8 @@ class Task(models.Model):
     def to_dict(self):
         return {'id': self.pk, 'title': self.title}
 
-    def __unicode__(self):
-        return self.title[:50] + ' ' + unicode(self.project)
+    # def __unicode__(self):
+    #     return self.title[:50] + ' ' + unicode(self.project)
 
     def __str__(self):
         return ":".join([self.title, str(self.t_date)])
@@ -35,8 +35,8 @@ class Project(models.Model):
     owners = ManyToManyField(User, related_name='projects')
     color = models.ForeignKey('Dictionary', null=True)
 
-    def __unicode__(self):
-        return '"' + self.name + '" by ' + unicode(self.owners)
+    # def __unicode__(self):
+    #     return '"' + self.name + '" by ' + unicode(self.owners)
 
     def __str__(self):
         return ":".join([self.id.__str__(), self.name])
