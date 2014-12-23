@@ -10,44 +10,58 @@ from django.template import RequestContext
 from django.utils.datetime_safe import datetime
 from django.views.generic import FormView
 from main_app.forms import UserForm, UserProfileForm, LoginForm
-from main_app.models import Task, Project
+from main_app.models import Task, Project, Label
 
 
 # returns inbox project
 @login_required(login_url=reverse_lazy("sign_in"))
 def index(request):
-    projects = Project.objects.filter(owners__in=[request.user])
     # print(projects)
-    query = Q(owners__in=[request.user]) & Q(name__iexact='inbox')
+    query = Q(owner=request.user) & Q(name__iexact='inbox')
 
-    curr_project = Project.objects.get(query)
-    curr_project_id = curr_project.id
-    context = {'projects': projects,
-               'curr_project': curr_project,
-               'curr_project_id': curr_project_id,
-               'tasks': Task.objects.filter(project=curr_project).order_by("-t_date")
-               }
+    try:
+        curr_project = Project.objects.get(query)
+    except Project.DoesNotExist:
+        curr_project = None
+    if curr_project is None:
+        p = Project(name='inbox')
+        p.owner = request.user
+        p.save()
+        curr_project = p
+    # projects = Project.objects.filter(owners__in=[request.user.id])
+    # print(projects)
+    # print(request.user.id)
+    # curr_project_id = curr_project.id
+    labels = Label.objects.filter(user=request.user)
+
+    context = {
+        'labels': labels,
+        # 'projects': projects,
+        # 'curr_project': curr_project,
+        # 'curr_project_id': curr_project_id,
+        # 'tasks': Task.objects.filter(project=curr_project).order_by("-t_date")
+    }
     # print(curr_project)
     return render(request, 'main_app/index.html',
                   context)
 
 
-@login_required(login_url=reverse_lazy("sign_in"))
-def certain_project(request, project_id='-1'):
-    project_id = int(project_id)
-    projects = Project.objects.filter(owners__in=[request.user])
-    if project_id == -1:
-        query = Q(name__iexact='inbox')
-    else:
-        query = Q(pk=int(project_id))
-    curr_project = Project.objects.get(query)
-
-    return render(request, 'main_app/index.html',
-                  # {"tasks": Task.objects.filter(project=project).order_by("-t_date")})
-                  # {"tasks": Task.objects.filter().order_by("-t_date")})
-                  {'projects': projects,
-                   'curr_project': curr_project,
-                   "tasks": Task.objects.filter(project=curr_project).order_by("-t_date")})
+# @login_required(login_url=reverse_lazy("sign_in"))
+# def certain_project(request, project_id='-1'):
+#     project_id = int(project_id)
+#     projects = Project.objects.filter(owners__in=[request.user])
+#     if project_id == -1:
+#         query = Q(name__iexact='inbox')
+#     else:
+#         query = Q(pk=int(project_id))
+#     curr_project = Project.objects.get(query)
+#
+#     return render(request, 'main_app/index.html',
+#                   # {"tasks": Task.objects.filter(project=project).order_by("-t_date")})
+#                   # {"tasks": Task.objects.filter().order_by("-t_date")})
+#                   {'projects': projects,
+#                    'curr_project': curr_project,
+#                    "tasks": Task.objects.filter(project=curr_project).order_by("-t_date")})
 
 
 def all_projects(request):
@@ -55,12 +69,12 @@ def all_projects(request):
         name = request.POST["project_name"]
         p = Project(name=name)
         p.save()
-        p.owners.add(request.user)
+        p.owner.add(request.user)
         # p.save()
-        projects = Project.objects.filter(owners__in=[request.user])
+        projects = Project.objects.filter(owner=request.user)
         return render(request, 'main_app/projects.html', {'projects': projects})
     else:
-        projects = Project.objects.filter(owners__in=[request.user])
+        projects = Project.objects.filter(owner=request.user)
         return render(request, 'main_app/projects.html', {'projects': projects})
 
 
@@ -75,12 +89,26 @@ def process(request):
 
 
 def about(request):
-    return render(request, 'main_app/about.html')
+    new_tasks_count = 0
+    if request.session.has_key('ADDED_NEW_TASKS'):
+        new_tasks_count = request.session['ADDED_NEW_TASKS']
+
+    return render(request, 'main_app/about.html', {'new_tasks_count' : new_tasks_count})
 
 
 @login_required(login_url=reverse_lazy("sign_in"))
 def labels(request):
-    return render(request, 'main_app/labels.html')
+    if request.method == 'POST':
+        title = request.POST["label_title"]
+        l = Label(title=title)
+        l.user = request.user
+        l.save()
+        # p.save()
+        labels = Label.objects.filter(user=request.user)
+        return render(request, 'main_app/labels.html', {'labels': labels})
+    else:
+        labels = Label.objects.filter(user=request.user)
+        return render(request, 'main_app/labels.html', {'labels': labels})
 
 
 @login_required(login_url=reverse_lazy("sign_in"))
@@ -118,9 +146,9 @@ def no_auth(v):
 #         return HttpResponseRedirect('/')
 
 
-@login_required(login_url=reverse_lazy('sign_in'))
-def profile(request):
-    return render(request, 'main_app/profile.html')
+# @login_required(login_url=reverse_lazy('sign_in'))
+# def profile(request):
+#     return render(request, 'main_app/profile.html')
 
 
 @no_auth
@@ -139,8 +167,8 @@ def sign_up(request):
             user_profile = profile_form.save(commit=False)
             user_profile.user = user
             p = Project(name='inbox')
+            p.owner = user
             p.save()
-            p.owners.add(user)
 
             if 'avatar' in request.FILES:
                 profile.avatar = request.FILES['avatar']
@@ -156,6 +184,51 @@ def sign_up(request):
     return render_to_response(
         'main_app/signup.html',
         {'user_form': user_form, 'profile_form': profile_form},
+        context)
+
+
+@login_required(login_url=reverse_lazy('sign_in'))
+def profile(request):
+    context = RequestContext(request)
+
+    user = request.user
+    profile = request.user.profile
+
+    if request.method == 'POST':
+
+        firstname = request.POST['firstname']
+        lastname = request.POST['lastname']
+        email = request.POST['email']
+        # birth_date = request.POST['birth_date']
+        about_me = request.POST['about_me'].strip()
+
+        profile.about_me = about_me
+        # if birth_date:
+        #     profile.birth_date = birth_date
+
+        user.email = email
+        user.first_name = firstname
+        user.last_name = lastname
+        user.save()
+
+        if 'avatar' in request.FILES:
+            profile.avatar = request.FILES['avatar']
+
+        profile.save()
+        return redirect(reverse_lazy('profile'))
+    else:
+        context['firstname'] = user.first_name
+        context['lastname'] = user.last_name
+        context['email'] = user.email
+        # context['birth_date'] = profile.birth_date
+        context['about_me'] = profile.about_me
+        context['avatar'] = profile.avatar
+
+
+
+    return render_to_response(
+        'main_app/profile.html',
+
         context)
 
 
@@ -191,62 +264,6 @@ class LoginView(FormView):
         else:
             return redirect(reverse_lazy('sign_in'))
 
-
-# @no_auth
-# def sign_in(request):
-#     # Like before, obtain the context for the user's request.
-#     # context = RequestContext(request)
-#     # If the request is a HTTP POST, try to pull out the relevant information.
-#     if request.method == 'POST':
-#         f = LoginForm(request.POST)
-#         if f.is_valid():
-#             # Gather the username and password provided by the user.
-#             # This information is obtained from the login form.
-#             # username = request.POST['username']
-#             # password = request.POST['password']
-#
-#             user = authenticate(
-#                 username=f.cleaned_data["username"],
-#                 password=f.cleaned_data["password"]
-#             )
-#
-#             # Use Django's machinery to attempt to see if the username/password
-#             # combination is valid - a User object is returned if it is.
-#             # user = authenticate(username=username, password=password)
-#
-#             # If we have a User object, the details are correct.
-#             # If None (Python's way of representing the absence of a value), no user
-#             # with matching credentials was found.
-#             if user:
-#                 # Is the account active? It could have been disabled.
-#                 if user.is_active:
-#                     # If the account is valid and active, we can log the user in.
-#                     # We'll send the user back to the homepage.
-#                     login(request, user)
-#                     if request.GET.has_key("next"):
-#                         return HttpResponseRedirect(request.GET["next"])
-#                     else:
-#                         return HttpResponseRedirect(reverse('index'))
-#                 else:
-#                     # An inactive account was used - no logging in!
-#                     return HttpResponse("Your Rango account is disabled.")
-#             else:
-#                 # Bad login details were provided. So we can't log the user in.
-#                 print "Invalid login details: {0}, {1}".format(username, password)
-#                 # return HttpResponse("Invalid login details supplied.")
-#                 return HttpResponseRedirect(reverse('sign_in'))
-#
-#     # The request is not a HTTP POST, so display the login form.
-#     # This scenario would most likely be a HTTP GET.
-#     else:
-#         # No context variables to pass to the template system, hence the
-#         # blank dictionary object...
-#         f = LoginForm()
-#         context = {"f": f}
-#         if request.GET.has_key("next"):
-#             context["next"] = request.GET["next"]
-#         return render(request, "main_app/signin.html", context)
-#         # return render_to_response('main_app/signin.html', {}, context)
 
 
 @login_required(login_url=reverse_lazy("sign_in"))

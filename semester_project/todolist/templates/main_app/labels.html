@@ -10,28 +10,54 @@
 
             <div class="row">
 
-                <div class="col-sm-10">
-                    <div class="row">
-                        <div class="col-md-3" style="color: red; font-size: 14pt">@to_send</div>
-                        <div class="col-md-2">
-                            <img src="{% static 'images/edit.png' %}"/></div>
-                    </div>
+{#                <div class="col-sm-10">#}
+{#                    <div class="row">#}
+{#                        <div class="col-md-3" style="color: red; font-size: 14pt">@to_send</div>#}
+{#                        <div class="col-md-2">#}
+{#                            <img src="{% static 'images/edit.png' %}"/></div>#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{#                <div class="col-sm-10">#}
+{#                    <div class="row">#}
+{#                        <div class="col-md-3" style="color: #245269; font-size: 14pt">@2peter</div>#}
+{#                        <div class="col-md-2">#}
+{#                            <img src="{% static 'images/edit.png' %}"/></div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="col-sm-10">#}
+{#                    <div class="row">#}
+{#                        <div class="col-md-3" style="color: #eb9316; font-size: 14pt">@daily</div>#}
+{#                        <div class="col-md-2">#}
+{#                            <img src="{% static 'images/edit.png' %}"/></div>#}
+{#                    </div>#}
+{#                </div>#}
 
-                </div>
-                <div class="col-sm-10">
-                    <div class="row">
-                        <div class="col-md-3" style="color: #245269; font-size: 14pt">@2peter</div>
-                        <div class="col-md-2">
-                            <img src="{% static 'images/edit.png' %}"/></div>
-                    </div>
-                </div>
-                <div class="col-sm-10">
-                    <div class="row">
-                        <div class="col-md-3" style="color: #eb9316; font-size: 14pt">@daily</div>
-                        <div class="col-md-2">
-                            <img src="{% static 'images/edit.png' %}"/></div>
-                    </div>
-                </div>
+
+
+                <form action="{% url 'labels' %}" method='post'>
+                    {% csrf_token %}
+                    <label for="label_title">Add new project:</label>
+
+                    <p><textarea id="label_title" name='label_title' cols="100"></textarea></p>
+
+                    <p><input type='submit' value='Add'/></p>
+                </form>
+
+                {% if labels %}
+                    {% for l in labels %}
+                        <div class="col-sm-10">
+                            <div class="row">
+                                <div class="col-md-3" style="font-size: 14pt">{{ l.title }}</div>
+                                <div class="col-md-2">
+{#                                    <img src="{% static 'images/edit.png' %}"/>#}
+{#                                    <a href="{% url 'api/label_detail' pk=l.id  %}">Delete</a>#}
+                                    <a href="#label_title">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
 
             </div>

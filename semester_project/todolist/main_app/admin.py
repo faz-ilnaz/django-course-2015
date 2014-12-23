@@ -6,7 +6,7 @@ from main_app.models import *
 
 class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('name',)
-    list_display = ('name', 'color')
+    list_display = ('name', 'color', 'owner')
 
 
 class AttachmentAdmin(admin.ModelAdmin):
@@ -50,8 +50,8 @@ class PriorityAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    search_fields = ('birth_date', 'registration_date')
-    list_display = ('user', 'avatar', 'birth_date', 'registration_date')
+    search_fields = ('user__username','birth_date', 'registration_date')
+    list_display = ('user', 'gender', 'birth_date', 'registration_date')
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Attachment, AttachmentAdmin)

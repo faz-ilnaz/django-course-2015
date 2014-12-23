@@ -11,6 +11,9 @@
     <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
+
+
+
     <!-- Custom styles for this template -->
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
 
@@ -27,11 +30,12 @@
         <div id="navbar" class="navbar-collapse collapse">
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{% url 'about' %}">About</a></li>
                 {% if user.is_authenticated %}
+                    <li><a href="{% url 'projects' %}">Projects</a></li>
                     <li><a href="{% url 'profile' %}">Profile</a></li>
                     <li><a href="{% url 'labels' %}">Labels</a></li>
-                    <li><a href="{% url 'filters' %}">Filters</a></li>
+                    <li><a href="{% url 'help' %}">Help</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
                     <li class="dropdown" >
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">
                         {{ user.username }}
@@ -47,9 +51,9 @@
                     <li><a href="{% url 'sign_in' %}">Login</a></li>
                 {% endif %}
             </ul>
-            <form class="navbar-form navbar-right">
-                <input type="text" class="form-control" placeholder="Search...">
-            </form>
+{#            <form class="navbar-form navbar-right">#}
+{#                <input type="text" class="form-control" placeholder="Search...">#}
+{#            </form>#}
         </div>
     </div>
 </nav>
@@ -65,13 +69,16 @@
 <div id="footer" class="navbar-fixed-bottom">
     <div class="container">
 
-        <p>© 2014 All rights reserved</p>
+        <p>© 2014 All rights reserved. </p>
+
     </div>
 </div>
 
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
 </body>
 </html>

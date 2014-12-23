@@ -1,12 +1,6 @@
-/*!
-** Todo-Sortable-List Example App
-** Licensed under the Apache License v2.0
-** http://www.apache.org/licenses/LICENSE-2.0
-** Built by Jay Kanakiya ( @techiejayk )
-**/
 "use strict";
 
-var App = angular.module("todo", ["ui.sortable", 'ngCookies', 'xeditable']);
+var App = angular.module("todo", ["ui.sortable", 'ngCookies', 'xeditable', "ui.bootstrap", "checklist-model"]);
 
 App.controller("TodoCtrl", function ($scope, $http, $cookies) {
 
@@ -37,12 +31,13 @@ App.controller("TodoCtrl", function ($scope, $http, $cookies) {
 //	};
 
     $scope.addTodo = function(){
-        var inData= {title: $scope.newTodo, isDone: false, project: $scope.model[$scope.currentShow].id};
+        var inData= {title: $scope.newTodo, isDone: false, project: $scope.model[$scope.currentShow].id, t_date: $scope.newTaskDate};
         $http.post('/api/tasks/',  inData).success(function(response){
 //            $scope.getAllTodos();
             $scope.model[$scope.currentShow].tasks.push(response);
         });
         $scope.newTodo = '';
+        $scope.newTaskDate = '';
     };
 
 	$scope.deleteTodo = function  (task) {
@@ -58,11 +53,25 @@ App.controller("TodoCtrl", function ($scope, $http, $cookies) {
         return $http.put('/api/tasks/' +  task.id, task)
      };
 
-	$scope.todoSortable = {
-		containment: "parent",//Dont let the user drag outside the parent
-		cursor: "move",//Change the cursor icon on drag
-		tolerance: "pointer"//Read http://api.jqueryui.com/sortable/#option-tolerance
-	};
+    $scope.showLabel = function() {
+        var selected = [];
+        angular.forEach($scope.labels, function(l) {
+            selected.push(l.title);
+        });
+        return selected.length ? selected.join(', ') : 'Not set';
+      };
+
+    $scope.loadLabels = function() {
+        return $scope.labels.length ? null : $http.get('/api/labels').success(function(data) {
+          $scope.labels = data;
+        });
+      };
+
+//	$scope.todoSortable = {
+//		containment: "parent",//Dont let the user drag outside the parent
+//		cursor: "move",//Change the cursor icon on drag
+//		tolerance: "pointer"//Read http://api.jqueryui.com/sortable/#option-tolerance
+//	};
 
 	$scope.changeTodo = function  (i) {
 		$scope.currentShow = i;

@@ -11,6 +11,7 @@ from todolist import settings
 # v1_api.register(ProjectResource())
 # v1_api.register(TaskResource())
 
+admin.autodiscover()
 
 urlpatterns = patterns('main_app.views',
     # Examples:
@@ -32,11 +33,6 @@ urlpatterns = patterns('main_app.views',
         name="settings"
     ),
     url(
-        r'^404/',
-        TemplateView.as_view(template_name="main_app/404.html"),
-        name="page_not_found"
-    ),
-    url(
         r'^help/',
         TemplateView.as_view(template_name="main_app/help.html"),
         name="help"
@@ -49,7 +45,7 @@ urlpatterns = patterns('main_app.views',
         name="new_index"
     ),
 
-    url(r'^projects/(?P<project_id>\w+)', 'certain_project', name='certain_project'),
+    # url(r'^projects/(?P<project_id>\w+)', 'certain_project', name='certain_project'),
 
     url(r'^projects/$', 'all_projects', name='projects'),
 
@@ -60,6 +56,8 @@ urlpatterns = patterns('main_app.views',
 
     # url(r'^api/', include(v1_api.urls)),
 )
+
+# handler404 = TemplateView.as_view(template_name="main_app/404.html"),
 
 urlpatterns += patterns('',
     url(r'^media/(?P<path>.*)', 'django.views.static.serve',

@@ -19,24 +19,47 @@
 
 #todoAdd {
 	margin-left: 40px;
+    margin-bottom: 20px;
 }
 
-.todoField{
-	padding-left: 5px;
-	font-size: 20px;
-}
+/*.todoField{*/
+	/*padding-left: 5px;*/
+	/*font-size: 20px;*/
+/*}*/
 
-#newTodoField{
-	margin: 20px;
-	width: 75%;
-}
+/*#newTodoField{*/
+	/*margin: 10px;*/
+/*}*/
+/*#todoAdd {*/
+	/*margin-left: 40px;*/
+/*}*/
+
+/*.todoField{*/
+	/*padding-left: 5px;*/
+	/*font-size: 20px;*/
+/*}*/
+
+/*#newTodoField{*/
+	/*margin: 20px;*/
+	/*width: 75%;*/
+/*}*/
 
 #todoSubmit{
 	margin-top: -5px;
 }
 
 .todoTask{
-	margin-bottom: 20px;
+	margin-bottom: 10px;
+    padding: 10px;
+    /*clear: both;*/
+}
+
+.todoTask>button {
+    float: right;
+}
+
+.todoTask:hover{
+	background-color: #eee;
 }
 
 .todoName{
@@ -45,24 +68,62 @@
 	padding-bottom:5px;
 }
 
-.edit-in-place span {
-  cursor: pointer;
+.task_date {
+    padding-right: 10px;
 }
 
-.edit-in-place input {
-  display: none;
-}
+/*.edit-in-place span {*/
+  /*cursor: pointer;*/
+/*}*/
 
-.edit-in-place.active span {
-  display: none;
-}
+/*.edit-in-place input {*/
+  /*display: none;*/
+/*}*/
 
-.edit-in-place.active input {
-  display: inline-block;
-}
+/*.edit-in-place.active span {*/
+  /*display: none;*/
+/*}*/
 
+/*.edit-in-place.active input {*/
+  /*display: inline-block;*/
+/*}*/
+
+.editable-click:hover, a.editable-click:hover {
+    text-decoration: none;
+    color: #080808;
+    cursor: text;
+}
 .editable-click, a.editable-click {
     text-decoration: none;
     color: #080808;
     border-bottom: none;
+}
+
+
+
+#projectAdd {
+	margin-left: 40px;
+}
+
+.projectField{
+	padding-left: 5px;
+	font-size: 20px;
+}
+
+#newProjectField{
+	margin: 20px;
+	width: 75%;
+}
+
+#projectSubmit{
+	margin-top: -5px;
+}
+
+.projectContainer {
+	margin-bottom: 20px;
+    padding: 10px;
+}
+
+.projectContainer:hover{
+	background-color: #eee;
 }

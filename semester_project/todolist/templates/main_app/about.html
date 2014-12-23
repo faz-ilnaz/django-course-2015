@@ -1,4 +1,5 @@
 {% extends 'main_app/base.html' %}
+{% load staticfiles %}
 
 {% block content %}
     <div class="row">
@@ -11,6 +12,7 @@
             <div class="row">
 
                         <div class="col-sm-10">
+                            <p>Added new tasks count: {{ new_tasks_count }}</p>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam vel lobortis sapien, molestie ornare arcu.
                                 Integer malesuada maximus malesuada.
                                 Morbi vitae nunc purus. Integer ultricies ac lacus vel scelerisque. Ut venenatis justo quis venenatis euismod.
@@ -36,4 +38,9 @@
 
         </div>
     </div>
+
+    <script src="{% static 'js/libs/jquery.min.js'%} "></script>
+	<script src="{% static 'js/libs/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/libs/jquery-ui.min.js' %}"></script>
+
 {% endblock %}

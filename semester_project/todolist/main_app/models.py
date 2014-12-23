@@ -6,13 +6,13 @@ import PIL
 
 class Task(models.Model):
     title = models.CharField(max_length=300)
-    t_date = models.DateTimeField(auto_now_add=True, auto_now=True)
+    t_date = models.DateTimeField(null=True, blank=True)
     labels = ManyToManyField('Label', null=True)
     priority = ForeignKey('Priority', null=True)
     note = ForeignKey('Note', null=True)
     isDone = models.BooleanField(default=True)
     project = ForeignKey('Project', null=True, related_name='tasks')
-    attachments = ManyToManyField('Attachment', null=True)
+    attachments = ForeignKey('Attachment', null=True)
 
     def to_dict(self):
         return {'id': self.pk, 'title': self.title}
@@ -26,17 +26,17 @@ class Task(models.Model):
 
 class Label(models.Model):
     title = models.CharField(max_length=50)
-    color = models.ForeignKey('Dictionary')
+    color = models.ForeignKey('Dictionary', null=True)
     user = ForeignKey(User)
 
 
 class Project(models.Model):
     name = models.CharField(max_length=100)
-    owners = ManyToManyField(User, related_name='projects')
+    owner = ForeignKey(User, related_name='projects')
     color = models.ForeignKey('Dictionary', null=True)
 
     # def __unicode__(self):
-    #     return '"' + self.name + '" by ' + unicode(self.owners)
+    #     return '"' + self.name + '" by ' + unicode(self.owner)
 
     def __str__(self):
         return ":".join([self.id.__str__(), self.name])
@@ -48,7 +48,7 @@ class Note(models.Model):
 
 
 class Attachment(models.Model):
-    content = models.FileField()
+    content = models.FileField(upload_to='user_files')
     user = ForeignKey(User)
 
 
@@ -70,9 +70,16 @@ class Dictionary(models.Model):
 
 
 class Profile(models.Model):
+    GENDER = (
+        ('F', 'Female'),
+        ('M', 'Male')
+    )
+
     user = OneToOneField(User)
+    gender = models.CharField(max_length=20, null=True, blank=True, choices=GENDER)
     avatar = models.ImageField(upload_to='avatars', blank=True)
-    birth_date = models.DateField(auto_now=True)
+    birth_date = models.DateField(null=True, blank=True)
+    about_me = models.TextField(null=True, blank=True)
     registration_date = models.DateField(auto_now_add=True)
 
 
